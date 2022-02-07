@@ -2,13 +2,13 @@
 set -e
 rm -rf iso_root
 mkdir -p iso_root
-cp target/target/debug/rust_os iso_root/kernel.elf
+cp target/x86_64/debug/rust_os iso_root/kernel.elf
 cp limine.cfg limine/limine.sys limine/limine-cd.bin limine/limine-eltorito-efi.bin iso_root/
 xorriso -as mkisofs -b limine-cd.bin \
 		-no-emul-boot -boot-load-size 4 -boot-info-table \
 		--efi-boot limine-eltorito-efi.bin \
 		-efi-boot-part --efi-boot-image --protective-msdos-label \
-		iso_root -o target/target/debug/rust_os.iso
+		iso_root -o target/x86_64/debug/rust_os.iso
 rm -rf iso_root
-./limine/limine-install-linux-x86_64 target/target/debug/rust_os.iso
-qemu-system-x86_64 --enable-kvm target/target/debug/rust_os.iso -d int -M smm=off -no-reboot
+./limine/limine-install-linux-x86_64 target/x86_64/debug/rust_os.iso
+qemu-system-x86_64 --enable-kvm target/x86_64/debug/rust_os.iso -d int -M smm=off -no-reboot
