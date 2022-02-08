@@ -6,6 +6,7 @@ edition = "2021"
 [dependencies]
 stivale-boot = "0.2.6"
 lateinit = "0.2.0"
+x86_64 = "0.14.8"
 [dependencies.lazy_static]
 version = "1.0"
 features = ["spin_no_std"]
