@@ -15,6 +15,5 @@ extern "C" fn _start(boot_info: &StivaleStruct) -> ! {
     
     let terminal = terminal_tag.unwrap();
     print::init(terminal);
-    panic!("This a panic test");
-    
+    loop{}
 }
