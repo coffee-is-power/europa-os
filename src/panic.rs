@@ -1,6 +1,6 @@
 use core::panic::PanicInfo;
 
-use crate::{print, println};
+use crate::println;
 
 /// This function is called on panic.
 #[panic_handler]
