@@ -19,7 +19,6 @@ extern "C" fn _start(boot_info: &StivaleStruct) -> ! {
     print::init(terminal);
     idt::load_idt();
 
-    x86_64::instructions::interrupts::int3();
     println!("It did not crash!");
     loop{}
 }
