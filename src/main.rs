@@ -19,6 +19,5 @@ extern "C" fn _start(boot_info: &StivaleStruct) -> ! {
     print::init(terminal);
     idt::load_idt();
 
-    println!("It did not crash!");
-    loop{}
+    panic!("Kernel reached the final of the main function.")
 }
