@@ -1,18 +1,22 @@
-use lateinit::LateInit;
 use stivale_boot::v2::*;
 
-static GLOBAL_TERMINAL : LateInit<&StivaleTerminalTag> = LateInit::new();
+static mut GLOBAL_TERMINAL: *const StivaleTerminalTag = null();
+
 pub fn init(terminal: *const StivaleTerminalTag) {
     unsafe {
-        GLOBAL_TERMINAL.init(terminal.as_ref().unwrap());
+        GLOBAL_TERMINAL = terminal;
     }
 }
 
 use core::fmt;
+use core::ptr::null;
+
 struct Writer {}
 impl Writer {
-    fn write_string(s: &str){
-        GLOBAL_TERMINAL.term_write()(s);
+    fn write_string(s: &str) {
+        unsafe {
+            (*GLOBAL_TERMINAL).term_write()(s);
+        }
     }
 }
 impl fmt::Write for Writer {

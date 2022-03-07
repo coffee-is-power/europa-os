@@ -15,12 +15,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
 
 [[package]]
-name = "lateinit"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aab44cc53bb2c4bc7bbfebd1895d534ed5203fa26c1b918ca8f72d9a20724de0"
-
-[[package]]
 name = "lazy_static"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -33,7 +27,6 @@ dependencies = [
 name = "rust_os"
 version = "0.1.0"
 dependencies = [
- "lateinit",
  "lazy_static",
  "stivale-boot",
  "x86_64",
