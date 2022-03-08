@@ -5,17 +5,11 @@
 mod panic;
 mod print;
 mod idt;
-mod paging;
 mod memory;
-mod allocator;
-mod bitmap;
 
 use stivale_boot::v2::*;
-use x86_64::structures::idt::ExceptionVector::Stack;
-use x86_64::{PhysAddr, VirtAddr};
-use crate::allocator::{PageFrameAllocator, set_global_allocator};
-use crate::memory::map_mem;
-use crate::paging::{active_level_4_table};
+use memory::paging::active_level_4_table;
+use crate::memory::allocator::{PageFrameAllocator, set_global_allocator};
 
 static mut STACK: [u8; 1048576] = [0; 1048576];
 static TERMINAL_TAG: StivaleTerminalHeaderTag  = StivaleTerminalHeaderTag::new();

@@ -2,7 +2,12 @@ use x86_64::structures::paging::{PageTable, PageTableFlags};
 use x86_64::{PhysAddr, VirtAddr};
 use x86_64::structures::idt::ExceptionVector::Page;
 use crate::active_level_4_table;
-use crate::allocator::get_global_allocator;
+pub mod allocator;
+pub mod paging;
+mod bitmap;
+use crate::memory::allocator::get_global_allocator;
+
+
 fn alloc_page() -> PhysAddr{
     get_global_allocator().request_page().expect("Couldn't allocate a page")
 }
