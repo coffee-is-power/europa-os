@@ -1,8 +1,7 @@
 use core::ptr::null_mut;
 use stivale_boot::v2::{StivaleMemoryMapEntry, StivaleMemoryMapEntryType};
 use x86_64::PhysAddr;
-use crate::bitmap::BitMap;
-use crate::println;
+use crate::memory::bitmap::BitMap;
 
 pub struct PageFrameAllocator {
     free_memory: u64,
@@ -11,6 +10,7 @@ pub struct PageFrameAllocator {
     bitmap: BitMap
 }
 #[derive(Debug)]
+#[allow(dead_code)]
 pub enum AllocErr {
     FreeMemoryNotFound
 }

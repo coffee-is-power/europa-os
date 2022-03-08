@@ -1,6 +1,5 @@
 use x86_64::structures::paging::{PageTable, PageTableFlags};
 use x86_64::{PhysAddr, VirtAddr};
-use x86_64::structures::idt::ExceptionVector::Page;
 use crate::active_level_4_table;
 pub mod allocator;
 pub mod paging;
