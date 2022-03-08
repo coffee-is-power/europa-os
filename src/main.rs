@@ -4,6 +4,8 @@
 mod panic;
 mod print;
 mod idt;
+mod bitmap;
+
 use stivale_boot::v2::*;
 static STACK: [u8; 1048576] = [0; 1048576];
 static TERMINAL_TAG: StivaleTerminalHeaderTag  = StivaleTerminalHeaderTag::new();
