@@ -1,7 +1,9 @@
+use core::mem::size_of;
 use core::ptr::null_mut;
 use stivale_boot::v2::{StivaleMemoryMapEntry, StivaleMemoryMapEntryType};
 use x86_64::PhysAddr;
 use crate::memory::bitmap::BitMap;
+use crate::println;
 
 pub struct PageFrameAllocator {
     free_memory: u64,
@@ -48,6 +50,13 @@ impl PageFrameAllocator {
             bitmap
         };
         new_allocator.lock_pages(new_allocator.bitmap.bitmap as u64, ((new_allocator.bitmap.size / 4096) + 1) as u64);
+
+        for i in 0..(*memory_map).entries_len {
+            let entry = &(*memmap_pointer.offset(i as isize) as StivaleMemoryMapEntry);
+            if entry.entry_type != StivaleMemoryMapEntryType::Usable {
+                new_allocator.reserve_pages(PhysAddr::new(entry.base).align_down(4096u64).as_u64(), (entry.length/4096)+1)
+            }
+        }
         new_allocator
     }
     pub fn lock_page(&mut self, address: u64) {
