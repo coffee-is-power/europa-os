@@ -1,10 +1,10 @@
 use x86_64::structures::paging::{PageTable, PageTableFlags};
 use x86_64::{PhysAddr, VirtAddr};
 use crate::active_level_4_table;
-pub mod allocator;
+pub mod page_allocator;
 pub mod paging;
 mod bitmap;
-use crate::memory::allocator::get_global_allocator;
+use crate::memory::page_allocator::get_global_allocator;
 
 
 fn alloc_page() -> PhysAddr{

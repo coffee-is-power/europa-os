@@ -9,7 +9,7 @@ mod memory;
 
 use stivale_boot::v2::*;
 use memory::paging::active_level_4_table;
-use crate::memory::allocator::{PageFrameAllocator, set_global_allocator};
+use crate::memory::page_allocator::{PageFrameAllocator, set_global_allocator};
 
 static mut STACK: [u8; 1048576] = [0; 1048576];
 static TERMINAL_TAG: StivaleTerminalHeaderTag  = StivaleTerminalHeaderTag::new();
