@@ -5,23 +5,22 @@
 
 extern crate alloc;
 
+use core::ptr::NonNull;
+
+use acpi::{AcpiTables};
+use linked_list_allocator::LockedHeap;
+use rsdp::handler::{AcpiHandler, PhysicalMapping};
+use stivale_boot::v2::*;
+
+use memory::paging::active_level_4_table;
+use crate::pci::PciConfigRegions;
+
+
 mod panic;
 mod print;
 mod idt;
 mod memory;
 mod pci;
-
-use core::alloc::Layout;
-use core::ptr::NonNull;
-use acpi::{AcpiError, AcpiTable, AcpiTables, PciConfigRegions};
-use acpi::mcfg::{Mcfg, McfgEntry};
-use acpi::sdt::{SdtHeader, Signature};
-use rsdp::Rsdp;
-use stivale_boot::v2::*;
-use memory::paging::active_level_4_table;
-use linked_list_allocator::LockedHeap;
-use rsdp::handler::{AcpiHandler, PhysicalMapping};
-use crate::pci::PCIDeviceHeader;
 
 #[derive(Clone)]
 struct AcpiHandlerImpl;
@@ -75,7 +74,8 @@ extern "C" fn _start(boot_info: &StivaleStruct) -> ! {
     unsafe {
         let tables = AcpiTables::from_rsdp(AcpiHandlerImpl, rsdp as usize).expect("Couldn't load tables");
 
-        let pciConfigs = PciConfigRegions::new(&tables).unwrap();
+        let pci_config_regions = PciConfigRegions::new(&tables).unwrap();
+        println!("Regions: {:#?}", pci_config_regions.get_pci_functions())
     }
     panic!("Kernel reached the end of the main function.")
 }
