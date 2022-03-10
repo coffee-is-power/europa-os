@@ -5,15 +5,12 @@
 
 extern crate alloc;
 
-use core::ptr::NonNull;
-
 use acpi::{AcpiTables};
 use linked_list_allocator::LockedHeap;
-use rsdp::handler::{AcpiHandler, PhysicalMapping};
 use stivale_boot::v2::*;
 
 use memory::paging::active_level_4_table;
-use crate::pci::PciConfigRegions;
+use crate::pci::{AcpiHandlerImpl, PciConfigRegions};
 
 
 mod panic;
@@ -22,16 +19,6 @@ mod idt;
 mod memory;
 mod pci;
 
-#[derive(Clone)]
-struct AcpiHandlerImpl;
-
-impl AcpiHandler for AcpiHandlerImpl {
-    unsafe fn map_physical_region<T>(&self, physical_address: usize, size: usize) -> PhysicalMapping<Self, T> {
-        return PhysicalMapping::new(physical_address, NonNull::new(physical_address as *mut T).unwrap(), size, size, AcpiHandlerImpl);
-    }
-
-    fn unmap_physical_region<T>(_: &PhysicalMapping<Self, T>) {}
-}
 #[global_allocator]
 static ALLOCATOR: LockedHeap = LockedHeap::empty();
 static mut STACK: [u8; 1048576] = [0; 1048576];

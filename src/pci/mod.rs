@@ -2,8 +2,9 @@ use alloc::{slice, vec};
 use alloc::vec::Vec;
 use acpi::mcfg::{Mcfg};
 use core::mem;
+use core::ptr::NonNull;
 use acpi::{AcpiError, AcpiTable, AcpiTables};
-use rsdp::handler::AcpiHandler;
+use rsdp::handler::{AcpiHandler, PhysicalMapping};
 
 #[derive(Clone, Copy, Debug)]
 #[repr(C, packed)]
@@ -103,4 +104,15 @@ impl PciConfigRegions {
         }
         result
     }
+}
+
+#[derive(Clone)]
+pub struct AcpiHandlerImpl;
+
+impl AcpiHandler for AcpiHandlerImpl {
+    unsafe fn map_physical_region<T>(&self, physical_address: usize, size: usize) -> PhysicalMapping<Self, T> {
+        return PhysicalMapping::new(physical_address, NonNull::new(physical_address as *mut T).unwrap(), size, size, AcpiHandlerImpl);
+    }
+
+    fn unmap_physical_region<T>(_: &PhysicalMapping<Self, T>) {}
 }
