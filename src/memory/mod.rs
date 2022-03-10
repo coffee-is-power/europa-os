@@ -1,14 +1,15 @@
+use alloc::alloc::alloc;
+use core::alloc::Layout;
 use x86_64::structures::paging::{PageTable, PageTableFlags};
 use x86_64::{PhysAddr, VirtAddr};
 use crate::active_level_4_table;
-pub mod page_allocator;
 pub mod paging;
 mod bitmap;
-use crate::memory::page_allocator::get_global_allocator;
-
 
 fn alloc_page() -> PhysAddr{
-    get_global_allocator().request_page().expect("Couldn't allocate a page")
+    unsafe {
+        PhysAddr::new(alloc(Layout::new::<PageTable>()) as u64)
+    }
 }
 pub unsafe fn map_mem(virtual_memory: VirtAddr, physical_memory: PhysAddr) {
     let l4_index = virtual_memory.p4_index();
