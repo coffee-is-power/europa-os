@@ -8,6 +8,7 @@ else
   KERNEL="$1"
 fi
 cp "$KERNEL" iso_root/kernel.elf
+cp initrd.img iso_root/
 cp limine.cfg limine/limine.sys limine/limine-cd.bin limine/limine-eltorito-efi.bin iso_root/
 xorriso -as mkisofs -b limine-cd.bin \
 		-no-emul-boot -boot-load-size 4 -boot-info-table \

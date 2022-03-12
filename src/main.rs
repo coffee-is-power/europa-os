@@ -5,9 +5,11 @@
 
 extern crate alloc;
 
+use alloc::string::{ToString};
 use acpi::{AcpiTables};
 use linked_list_allocator::LockedHeap;
 use stivale_boot::v2::*;
+use tar_no_std::TarArchiveRef;
 
 use memory::paging::active_level_4_table;
 use crate::pci::{AcpiHandlerImpl, PciConfigRegions};
@@ -62,7 +64,12 @@ extern "C" fn _start(boot_info: &StivaleStruct) -> ! {
         let tables = AcpiTables::from_rsdp(AcpiHandlerImpl, rsdp as usize).expect("Couldn't load tables");
 
         let pci_config_regions = PciConfigRegions::new(&tables).unwrap();
-        println!("Regions: {:#?}", pci_config_regions.get_pci_functions())
+        println!("Regions: {:#?}", pci_config_regions.get_pci_functions());
+
+
+        let module = &*(boot_info.modules().unwrap().modules_array.as_ptr());
+        let initramfs_archive = TarArchiveRef::new(core::slice::from_raw_parts(module.start as *const u8, (module.end - module.start) as usize));
+
     }
     panic!("Kernel reached the end of the main function.")
 }
