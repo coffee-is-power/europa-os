@@ -15,7 +15,7 @@ pub struct McfgEntry {
     pub bus_number_end: u8,
     _reserved: u32,
 }
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 #[repr(C, packed)]
 pub struct PCIDeviceHeader {
     pub vendor_id: u16,
