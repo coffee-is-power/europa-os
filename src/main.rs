@@ -2,6 +2,7 @@
 #![no_main]
 #![feature(abi_x86_interrupt)]
 #![feature(alloc_error_handler)]
+
 mod panic;
 mod print;
 mod idt;
@@ -14,9 +15,6 @@ use init::init;
 extern crate alloc;
 use stivale_boot::v2::*;
 use crate::initrd::get_initrd;
-
-
-
 
 extern "C" fn _start(boot_info: &'static StivaleStruct) -> ! {
     init(boot_info);
