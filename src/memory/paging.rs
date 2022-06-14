@@ -1,6 +1,6 @@
 pub use x86_64::structures::paging::PageTable;
 
-pub unsafe fn active_level_4_table()
+pub unsafe fn get_current_page_table()
     -> &'static mut PageTable
 {
     use x86_64::registers::control::Cr3;
