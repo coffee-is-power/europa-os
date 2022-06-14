@@ -16,5 +16,5 @@ xorriso -as mkisofs -b limine-cd.bin \
 		-efi-boot-part --efi-boot-image --protective-msdos-label \
 		iso_root -o "$KERNEL.iso"
 rm -rf iso_root
-./limine/limine-install-linux-x86_64 "$KERNEL.iso"
-qemu-system-x86_64 "$KERNEL.iso" -m 1G -cpu qemu64 -machine q35
+./limine/limine-install "$KERNEL.iso"
+qemu-system-x86_64 "$KERNEL.iso" -s -m 1G -cpu qemu64 -machine q35
