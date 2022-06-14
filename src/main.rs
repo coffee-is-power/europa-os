@@ -35,7 +35,7 @@ fn init_heap(boot_info: &StivaleStruct){
         let memory_map = boot_info.memory_map().unwrap();
         let mut largest_free_mem_segment_addr = 0u64;
         let mut largest_free_mem_segment_size = 0u64;
-        let mut memory_size = 0u64;
+
         let memmap_pointer = (*memory_map).entry_array.as_ptr();
         for i in 0..(*memory_map).entries_len {
             let entry = &(*memmap_pointer.offset(i as isize) as StivaleMemoryMapEntry);
@@ -44,7 +44,8 @@ fn init_heap(boot_info: &StivaleStruct){
                     largest_free_mem_segment_addr = entry.base;
                     largest_free_mem_segment_size = entry.length;
                 }
-                memory_size+=entry.length;
+                // This maybe useful later so i'm keeping it
+                // memory_size+=entry.length;
             }
         }
         ALLOCATOR.lock().init(largest_free_mem_segment_addr as usize, largest_free_mem_segment_size as usize);
