@@ -5,13 +5,14 @@
 
 extern crate alloc;
 
-use alloc::string::{ToString};
-use acpi::{AcpiTables};
+use alloc::string::ToString;
+use acpi::AcpiTables;
 use linked_list_allocator::LockedHeap;
 use stivale_boot::v2::*;
-use tar_no_std::TarArchiveRef;
+
 
 use memory::paging::active_level_4_table;
+use crate::initrd::get_initrd;
 use crate::pci::{AcpiHandlerImpl, PciConfigRegions};
 
 
@@ -20,7 +21,7 @@ mod print;
 mod idt;
 mod memory;
 mod pci;
-
+mod initrd;
 #[global_allocator]
 static ALLOCATOR: LockedHeap = LockedHeap::empty();
 static mut STACK: [u8; 1048576] = [0; 1048576];
@@ -53,7 +54,8 @@ fn init_heap(boot_info: &StivaleStruct){
 fn handle_allocation_error(layout: core::alloc::Layout) -> !{
     panic!("Couldn't alloc memory; Layout: {:#?}", layout);
 }
-extern "C" fn _start(boot_info: &StivaleStruct) -> ! {
+
+extern "C" fn _start(boot_info: &'static StivaleStruct) -> ! {
     let terminal_tag = boot_info.terminal();
     let terminal = terminal_tag.unwrap();
     print::init(terminal);
@@ -67,9 +69,11 @@ extern "C" fn _start(boot_info: &StivaleStruct) -> ! {
         println!("Regions: {:#?}", pci_config_regions.get_pci_functions());
 
 
-        let module = &*(boot_info.modules().unwrap().modules_array.as_ptr());
-        let initramfs_archive = TarArchiveRef::new(core::slice::from_raw_parts(module.start as *const u8, (module.end - module.start) as usize));
-
+        let initrd = get_initrd(boot_info);
+        
+        for file in initrd.entries() {
+            println!("{}", file.filename())
+        }
     }
     panic!("Kernel reached the end of the main function.")
 }
