@@ -21,16 +21,10 @@ use crate::initrd::get_initrd;
 extern "C" fn _start(boot_info: &'static StivaleStruct) -> ! {
     init(boot_info);
     let rsdp = boot_info.rsdp().unwrap().rsdp;
-    unsafe {
-        
-        println!("Regions: {:#?}", pci::get_pci_config_regions(rsdp as usize).unwrap().get_pci_functions());
-
-
-        let initrd = get_initrd(boot_info);
-        
-        for file in initrd.entries() {
-            println!("{}", file.filename())
-        }
+    println!("Regions: {:#?}", pci::get_pci_config_regions(rsdp as usize).unwrap().get_pci_functions());
+    let initrd = get_initrd(boot_info);
+    for file in initrd.entries() {
+        println!("{}", file.filename())
     }
     panic!("Kernel reached the end of the main function.")
 }
