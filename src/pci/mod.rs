@@ -116,3 +116,9 @@ impl AcpiHandler for AcpiHandlerImpl {
 
     fn unmap_physical_region<T>(_: &PhysicalMapping<Self, T>) {}
 }
+pub fn get_pci_config_regions(rsdp: usize) -> Option<PciConfigRegions>{
+    let tables = unsafe{
+        AcpiTables::from_rsdp(AcpiHandlerImpl, rsdp).ok()?
+    };
+    PciConfigRegions::new(&tables).ok()
+}

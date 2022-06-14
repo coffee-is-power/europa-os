@@ -2,43 +2,28 @@
 #![no_main]
 #![feature(abi_x86_interrupt)]
 #![feature(alloc_error_handler)]
-
-extern crate alloc;
-use acpi::AcpiTables;
-use stivale_boot::v2::*;
-
-
-use memory::paging::get_current_page_table;
-use crate::initrd::get_initrd;
-use crate::pci::{AcpiHandlerImpl, PciConfigRegions};
-
-
 mod panic;
 mod print;
 mod idt;
 mod memory;
 mod pci;
 mod initrd;
-static mut STACK: [u8; 1048576] = [0; 1048576];
-static TERMINAL_TAG: StivaleTerminalHeaderTag  = StivaleTerminalHeaderTag::new();
-static FB_TAG: StivaleFramebufferHeaderTag  = StivaleFramebufferHeaderTag::new().next((&TERMINAL_TAG as *const StivaleTerminalHeaderTag).cast());
-#[used]
-#[link_section = ".stivale2hdr"]
-static HDR : StivaleHeader = StivaleHeader::new().stack(unsafe{ &STACK[1048575] } as *const u8).tags((&FB_TAG as *const StivaleFramebufferHeaderTag).cast()).entry_point(_start);
+mod stivale;
+mod init;
+use init::init;
+extern crate alloc;
+use stivale_boot::v2::*;
+use crate::initrd::get_initrd;
+
+
 
 
 extern "C" fn _start(boot_info: &'static StivaleStruct) -> ! {
-    let terminal_tag = boot_info.terminal();
-    let terminal = terminal_tag.unwrap();
-    print::init(terminal);
-    memory::init_heap(boot_info);
-    idt::load_idt();
+    init(boot_info);
     let rsdp = boot_info.rsdp().unwrap().rsdp;
     unsafe {
-        let tables = AcpiTables::from_rsdp(AcpiHandlerImpl, rsdp as usize).expect("Couldn't load tables");
-
-        let pci_config_regions = PciConfigRegions::new(&tables).unwrap();
-        println!("Regions: {:#?}", pci_config_regions.get_pci_functions());
+        
+        println!("Regions: {:#?}", pci::get_pci_config_regions(rsdp as usize).unwrap().get_pci_functions());
 
 
         let initrd = get_initrd(boot_info);
