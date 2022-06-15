@@ -3,16 +3,17 @@ use core::alloc::Layout;
 use x86_64::structures::paging::{PageTable, PageTableFlags};
 use x86_64::{PhysAddr, VirtAddr};
 pub mod paging;
-mod bitmap;
 mod allocator;
 pub use allocator::*;
 mod memory_finder;
 use memory_finder::*;
+#[allow(dead_code)]
 fn alloc_page() -> PhysAddr{
     unsafe {
         PhysAddr::new(alloc(Layout::new::<PageTable>()) as u64)
     }
 }
+#[allow(dead_code)]
 pub unsafe fn map_mem(virtual_memory: VirtAddr, physical_memory: PhysAddr) {
     let l4_index = virtual_memory.p4_index();
     let l3_index = virtual_memory.p3_index();

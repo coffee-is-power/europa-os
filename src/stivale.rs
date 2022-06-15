@@ -1,10 +1,24 @@
 
 use stivale_boot::v2::*;
+macro_rules! tag {
+    ($tag_header:ident) => {
+        convert_to_pointer(&($tag_header)).cast()
+    }
+}
+const fn convert_to_pointer<T>(a: &T) -> *const T{
+    a as *const T
+}
 
-static mut STACK: [u8; 1048576] = [0; 1048576];
+#[used]
+#[link_section = ".stack"]
+static STACK: [u128; 61440] = [0; 61440];
 static TERMINAL_TAG: StivaleTerminalHeaderTag  = StivaleTerminalHeaderTag::new();
-static FB_TAG: StivaleFramebufferHeaderTag  = StivaleFramebufferHeaderTag::new().next((&TERMINAL_TAG as *const StivaleTerminalHeaderTag).cast());
+static FB_TAG: StivaleFramebufferHeaderTag = StivaleFramebufferHeaderTag::new().next(tag!(TERMINAL_TAG));
 
 #[used]
 #[link_section = ".stivale2hdr"]
-pub static HDR : StivaleHeader = StivaleHeader::new().stack(unsafe{ &STACK[1048575] } as *const u8).tags((&FB_TAG as *const StivaleFramebufferHeaderTag).cast()).entry_point(crate::_start);
+pub static HDR : StivaleHeader = StivaleHeader::new()
+    .stack((&STACK[61439] as *const u128).cast())
+    .tags(tag!(FB_TAG))
+    .entry_point(crate::_start);
+

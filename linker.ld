@@ -9,7 +9,10 @@ SECTIONS
     {
         KEEP(*(.stivale2hdr))
     }
-    
+    .stack ALIGN(16B):
+    {
+        KEEP(*(.stack))
+    }
     .text ALIGN(4K) :
     {
         KEEP(*(.text*))

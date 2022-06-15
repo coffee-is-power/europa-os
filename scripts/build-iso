@@ -1,0 +1,19 @@
+#!/bin/bash
+set -e
+rm -rf iso_root
+mkdir -p iso_root
+if [ "$1" == "" ]; then
+  KERNEL="target/x86_64/debug/europa_os";
+else
+  KERNEL="$1"
+fi
+cp "$KERNEL" iso_root/kernel.elf
+cp initrd.img iso_root/
+cp limine.cfg limine/limine.sys limine/limine-cd.bin limine/limine-eltorito-efi.bin iso_root/
+xorriso -as mkisofs -b limine-cd.bin \
+		-no-emul-boot -boot-load-size 4 -boot-info-table \
+		--efi-boot limine-eltorito-efi.bin \
+		-efi-boot-part --efi-boot-image --protective-msdos-label \
+		iso_root -o "$KERNEL.iso"
+rm -rf iso_root
+./limine/limine-install "$KERNEL.iso"

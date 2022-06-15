@@ -1,5 +1,6 @@
 pub use x86_64::structures::paging::PageTable;
 
+#[allow(dead_code)]
 pub unsafe fn get_current_page_table()
     -> &'static mut PageTable
 {
