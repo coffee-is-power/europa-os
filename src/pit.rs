@@ -38,3 +38,18 @@ pub fn tick() {
 fn get_frq() -> usize{
     unsafe{CYCLES_INTERVAL as usize * BASE_FREQUENCY}
 }
+/**
+ * This method set's the PIT channel mode
+ * Know more: https://wiki.osdev.org/PIT#I.2FO_Ports
+ # Safety
+ * If you set invalid modes, it may make the chip have undefined behavior
+*/
+pub unsafe fn set_pit_mode(mode: u8){
+    u8::write_to_port(0x43, mode);
+}
+/// This will set the channel mode to a arbitrary default mode
+pub fn set_default_pit_mode() {
+    unsafe {
+        set_pit_mode(0b00_11_010_0)
+    }
+}
