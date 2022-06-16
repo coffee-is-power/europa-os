@@ -1,10 +1,19 @@
+use core::arch::asm;
+
 use stivale_boot::v2::StivaleStruct;
-use crate::*;
+use crate::{*, pit::set_frq};
 
 pub fn init(boot_info: &StivaleStruct){
     let terminal = boot_info.terminal().unwrap();
     print::init(terminal);
     memory::init_heap(boot_info);
     idt::load_idt();
+    // Sets the PIC Chip Offset to a higher value so it doesn't overlap with the exception interrupts
+    pic::fix_pic();
+    // Enable PIT interrupt
+    pic::enable_interrupt(0x20);
+    set_frq(10);
+    // Enables Maskable interrupts from the PIC chip
+    unsafe {asm!("sti");}
     println!("Kernel initialized successfully!")
 }

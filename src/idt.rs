@@ -1,6 +1,6 @@
 
 use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame, PageFaultErrorCode};
-use crate::println;
+use crate::{println, pic::send_eoi};
 use lazy_static::lazy_static;
 
 lazy_static! {
@@ -10,6 +10,9 @@ lazy_static! {
         idt.page_fault.set_handler_fn(pagefault_handler);
         idt.general_protection_fault.set_handler_fn(general_protection_fault_handler);
         idt.double_fault.set_handler_fn(doublefault_handler);
+        idt[0x20].set_handler_fn(timer_int_handler);
+        idt[0x20+7].set_handler_fn(master_strange_int_handler);
+        idt[0x28+7].set_handler_fn(slave_strange_int_handler);
         idt
     };
 }
@@ -38,5 +41,16 @@ extern "x86-interrupt" fn doublefault_handler(
 extern "x86-interrupt" fn general_protection_fault_handler(
     stack_frame: InterruptStackFrame, err: u64)
 {
-    panic!("EXCEPTION: GP fault\n{:#?}\n Err: {}", stack_frame, err);
+   panic!("EXCEPTION: GP fault\n{:#?}\n Err: {}", stack_frame, err);
+}
+extern "x86-interrupt" fn timer_int_handler(_: InterruptStackFrame){
+    crate::pit::tick();
+    send_eoi(false)
+}
+extern "x86-interrupt" fn master_strange_int_handler(_: InterruptStackFrame){
+    println!("strange int");
+    send_eoi(false)
+}
+extern "x86-interrupt" fn slave_strange_int_handler(_: InterruptStackFrame){
+    println!("strange int");
 }
