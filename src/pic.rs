@@ -2,7 +2,7 @@ use x86_64::instructions::port::{PortWrite, PortRead};
 macro_rules! outb {
     ($port:expr, $data:expr) => {
         u8::write_to_port($port, $data);
-		u8::write_to_port(0x80, 0);
+	u8::write_to_port(0x80, 0);
     }
 }
 macro_rules! inb {
