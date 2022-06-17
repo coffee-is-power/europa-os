@@ -3,9 +3,9 @@
 // It'll call an interrupt every X time
 // It's ´Programmable´ because we can change the interval to whatever we want
 
-pub use x86_64::instructions::port::PortWrite;
+use x86_64::instructions::port::PortWrite;
 
-use crate::println;
+use crate::print;
 unsafe fn io_wait() {
     u8::write_to_port(0x80, 0);
 }
@@ -31,7 +31,7 @@ pub fn set_frq(frq: usize) {
 }
 /// This function is called every PIT tick/cycle
 pub fn tick() {
-    println!("Tick!");
+    print!("a");
     
 }
 /// Returns the current frequency

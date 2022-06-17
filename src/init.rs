@@ -10,7 +10,7 @@ pub fn init(boot_info: &StivaleStruct){
     idt::load_idt();
     
     pit::set_default_pit_mode();
-    pit::set_frq(10);
+    pit::set_frq(8000);
     // Sets the PIC Chip Offset to a higher value so it doesn't overlap with the exception interrupts
     pic::fix_pic();
     // Enable PIT interrupt

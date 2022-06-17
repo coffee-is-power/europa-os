@@ -8,6 +8,7 @@ pub fn init(terminal: *const StivaleTerminalTag) {
     }
 }
 
+use core::arch::asm;
 use core::fmt;
 use core::ptr::null;
 
@@ -28,9 +29,17 @@ impl fmt::Write for Writer {
 
 #[doc(hidden)]
 pub fn _print(args: fmt::Arguments) {
+    // If i some interrupt handler prints something while the CPU was already printing something
+    // It generates a GP fault so we disable interrupts and then enable interrupts after printing
+    unsafe{
+        asm!("cli");
+    }
     use core::fmt::Write;
     let mut writer = Writer {};
     writer.write_fmt(args).unwrap();
+    unsafe {
+        asm!("sti");
+    }
 }
 #[macro_export]
 macro_rules! print {
