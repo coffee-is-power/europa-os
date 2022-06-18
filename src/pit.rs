@@ -3,9 +3,9 @@
 // It'll call an interrupt every X time
 // It's ´Programmable´ because we can change the interval to whatever we want
 
-use x86_64::instructions::port::PortWrite;
+use x86_64::{instructions::port::PortWrite, structures::idt::{InterruptStackFrame, InterruptStackFrameValue}};
 
-use crate::print;
+use crate::println;
 unsafe fn io_wait() {
     u8::write_to_port(0x80, 0);
 }
@@ -28,11 +28,6 @@ pub fn set_cycles_interval(mut new_cycles_interval: u16) {
 /// Set the frequency
 pub fn set_frq(frq: usize) {
     set_cycles_interval((BASE_FREQUENCY/frq) as u16)
-}
-/// This function is called every PIT tick/cycle
-pub fn tick() {
-    // print!("a");
-    
 }
 /// Returns the current frequency
 fn get_frq() -> usize{

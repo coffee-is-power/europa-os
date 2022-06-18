@@ -1,4 +1,6 @@
 
+use core::arch::asm;
+
 use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame, PageFaultErrorCode};
 use crate::{println, pic::send_eoi};
 use lazy_static::lazy_static;
@@ -43,10 +45,46 @@ extern "x86-interrupt" fn general_protection_fault_handler(
 {
    panic!("EXCEPTION: GP fault\n{:#?}\n Err: {}", stack_frame, err);
 }
+#[naked]
 extern "x86-interrupt" fn timer_int_handler(_: InterruptStackFrame){
-    crate::pit::tick();
-    send_eoi(false)
+    unsafe {
+        asm! {
+            r#"
+                push rax
+                push rbx
+                push rcx
+                push rdx
+                push r8
+                push r9
+                push r10
+                push r11
+                push r12
+                push r13
+                push r14
+                push r15
+                call _tick
+                pop r15
+                pop r14
+                pop r13
+                pop r12
+                pop r11
+                pop r10
+                pop r9
+                pop r8
+                pop rdx
+                pop rcx
+                pop rbx
+                mov dl, 0x20
+                mov ax, dx
+                out dx, al
+                pop rax
+                iretq
+            "#,
+            options(noreturn)
+        }
+    }
 }
+#[no_mangle]
 extern "x86-interrupt" fn master_strange_int_handler(_: InterruptStackFrame){
     println!("strange int");
     send_eoi(false)
