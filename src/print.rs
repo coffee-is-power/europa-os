@@ -1,22 +1,44 @@
-use stivale_boot::v2::*;
+use x86_64::instructions::port::{PortWrite, PortRead};
+macro_rules! outb {
+    ($port:expr, $data:expr) => {
+        u8::write_to_port($port, $data)
+    };
+}
+macro_rules! inb {
+    ($port:expr) => {
+        u8::read_from_port($port)
+    };
+}
+const COM1: u16 = 0x3F8;
 
-static mut GLOBAL_TERMINAL: *const StivaleTerminalTag = null();
-
-pub fn init(terminal: *const StivaleTerminalTag) {
+fn is_transmit_empty() -> bool
+{
+	unsafe{inb!(COM1 + 5) & 0x20 > 0}
+}
+pub fn init() {
     unsafe {
-        GLOBAL_TERMINAL = terminal;
+        outb!(COM1 + 1, 0x00);
+        outb!(COM1 + 3, 0x80);
+        outb!(COM1 + 0, 0x03);
+        outb!(COM1 + 1, 0x00);
+        outb!(COM1 + 3, 0x03);
+        outb!(COM1 + 2, 0xC7);
+        outb!(COM1 + 4, 0x0B);
+        // Clear terminal
+        crate::print!("\x1b[H\x1b[0m\x1b[2J");
     }
 }
 
-use core::arch::asm;
 use core::fmt;
-use core::ptr::null;
 
 struct Writer {}
 impl Writer {
     fn write_string(s: &str) {
         unsafe {
-            (*GLOBAL_TERMINAL).term_write()(s);
+            for c in s.as_bytes() {
+                while !is_transmit_empty() {}
+                outb!(COM1, c.clone());
+            }
         }
     }
 }
@@ -29,17 +51,9 @@ impl fmt::Write for Writer {
 
 #[doc(hidden)]
 pub fn _print(args: fmt::Arguments) {
-    // If i some interrupt handler prints something while the CPU was already printing something
-    // It generates a GP fault so we disable interrupts and then enable interrupts after printing
-    unsafe{
-        asm!("cli");
-    }
     use core::fmt::Write;
     let mut writer = Writer {};
     writer.write_fmt(args).unwrap();
-    unsafe {
-        asm!("sti");
-    }
 }
 #[macro_export]
 macro_rules! print {
@@ -48,5 +62,5 @@ macro_rules! print {
 #[macro_export]
 macro_rules! println {
     () => (print!("\n"));
-    ($($arg:tt)*) => (crate::print!("{}\n", format_args!($($arg)*)));
+    ($($arg:tt)*) => (crate::print!("[\x1b[33mINFO\x1b[0m] {}\n", format_args!($($arg)*)));
 }

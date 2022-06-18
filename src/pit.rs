@@ -31,7 +31,7 @@ pub fn set_frq(frq: usize) {
 }
 /// This function is called every PIT tick/cycle
 pub fn tick() {
-    print!("a");
+    // print!("a");
     
 }
 /// Returns the current frequency

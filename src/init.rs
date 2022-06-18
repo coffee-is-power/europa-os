@@ -4,8 +4,7 @@ use stivale_boot::v2::StivaleStruct;
 use crate::{*};
 
 pub fn init(boot_info: &StivaleStruct){
-    let terminal = boot_info.terminal().unwrap();
-    print::init(terminal);
+    print::init();
     memory::init_heap(boot_info);
     idt::load_idt();
     
@@ -17,5 +16,6 @@ pub fn init(boot_info: &StivaleStruct){
     pic::enable_interrupt(0x20);
     // Enables Maskable interrupts from the PIC chip
     unsafe {asm!("sti");}
+
     println!("Kernel initialized successfully!")
 }
