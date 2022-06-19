@@ -4,7 +4,7 @@
 image:
   file: .gitpod.Dockerfile
 tasks:
-  - init: cargo build
+  - init: "scripts/bootstrap-limine && cargo build"
     command: cargo watch -x run
 
 
