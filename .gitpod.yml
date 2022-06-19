@@ -4,10 +4,11 @@ image:
 tasks:
   - init: "scripts/bootstrap-limine && cargo build"
     command: cargo watch -x run
-
-
-
 vscode:
   extensions:
     - matklad.rust-analyzer
     - serayuzgur.crates
+ports:
+  - port: 1234
+    onOpen: ignore
+    visibility: private
