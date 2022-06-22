@@ -4,7 +4,8 @@ use x86_64::structures::{paging::PageTable, idt::InterruptStackFrameValue};
 #[derive(Debug, Copy, Clone)]
 #[repr(C)]
 pub struct Registers {
-    pub cr3: *mut PageTable,
+    pub rsi: u64,
+    pub rdi: u64,
     pub r15: u64,
     pub r14: u64,
     pub r13: u64,
@@ -17,5 +18,6 @@ pub struct Registers {
     pub rcx: u64,
     pub rbx: u64,
     pub rax: u64,
+    pub rbp: u64,
     pub stack_frame: InterruptStackFrameValue
 }

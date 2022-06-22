@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="UnattendedHostPersistenceState">
+    <option name="openedFilesInfos">
+      <list>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="3219" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/src/scheduling/scheduler.rs" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="36" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/scripts/qemu" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="0" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/src/scheduling/thread.rs" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="459" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/src/scheduling/registers.rs" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="338" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/src/init.rs" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="2276" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/src/idt.rs" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="0" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/src/pit.rs" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="0" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/src/initrd.rs" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="782" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/src/print.rs" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="938" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/src/main.rs" />
+        </OpenedFileInfo>
+      </list>
+    </option>
+  </component>
+</project>

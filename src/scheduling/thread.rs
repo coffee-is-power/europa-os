@@ -1,6 +1,6 @@
 use x86_64::VirtAddr;
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub enum ThreadPriority {
     /// The thread will be executed at last
     Low = 0,
@@ -14,6 +14,7 @@ impl Into<u32> for ThreadPriority {
         self as u32
     }
 }
+#[derive(Debug)]
 pub enum ThreadState {
     /// The thread's code is on memory and it's ready for execution
     Created {
@@ -30,7 +31,7 @@ pub enum ThreadState {
     /// The thread's code ended and it can be freed up
     Ended
 }
-
+#[derive(Debug)]
 pub struct Thread {
     /// Id of the task
     pub id: usize,

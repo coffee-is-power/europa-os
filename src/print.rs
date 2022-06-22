@@ -1,3 +1,4 @@
+use core::arch::asm;
 use x86_64::instructions::port::{PortWrite, PortRead};
 macro_rules! outb {
     ($port:expr, $data:expr) => {
@@ -36,7 +37,7 @@ impl Writer {
     fn write_string(s: &str) {
         unsafe {
             for c in s.as_bytes() {
-                while !is_transmit_empty() {}
+                // while !is_transmit_empty() {}
                 outb!(COM1, c.clone());
             }
         }

@@ -4,7 +4,9 @@ use core::arch::asm;
 use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame, PageFaultErrorCode};
 use crate::{println, pic::send_eoi};
 use lazy_static::lazy_static;
-
+extern "x86-interrupt" fn invalid_opcode(isf: InterruptStackFrame){
+    panic!("INVALID OPCODE: {:#?}", isf);
+}
 lazy_static! {
     static ref IDT: InterruptDescriptorTable = {
         let mut idt = InterruptDescriptorTable::new();
@@ -12,6 +14,7 @@ lazy_static! {
         idt.page_fault.set_handler_fn(pagefault_handler);
         idt.general_protection_fault.set_handler_fn(general_protection_fault_handler);
         idt.double_fault.set_handler_fn(doublefault_handler);
+        idt.invalid_opcode.set_handler_fn(invalid_opcode);
         idt[0x20].set_handler_fn(timer_int_handler);
         idt[0x20+7].set_handler_fn(master_strange_int_handler);
         idt[0x28+7].set_handler_fn(slave_strange_int_handler);
@@ -50,6 +53,7 @@ extern "x86-interrupt" fn timer_int_handler(_: InterruptStackFrame){
     unsafe {
         asm! {
             r#"
+                push rbp
                 push rax
                 push rbx
                 push rcx
@@ -62,7 +66,12 @@ extern "x86-interrupt" fn timer_int_handler(_: InterruptStackFrame){
                 push r13
                 push r14
                 push r15
+                push 0
+                push 0
+                mov rdi, rsp
                 call _tick
+                pop rsi
+                pop rdi
                 pop r15
                 pop r14
                 pop r13
@@ -74,10 +83,10 @@ extern "x86-interrupt" fn timer_int_handler(_: InterruptStackFrame){
                 pop rdx
                 pop rcx
                 pop rbx
-                mov dl, 0x20
-                mov ax, dx
-                out dx, al
+                mov ax, 0x20
+                out 0x20, ax
                 pop rax
+                pop rbp
                 iretq
             "#,
             options(noreturn)
